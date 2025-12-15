@@ -1,4 +1,3 @@
-
 import express from 'express';
 import sqlite3 from 'sqlite3';
 import { fileURLToPath } from 'url';
@@ -18,6 +17,8 @@ const PORT = process.env.PORT || 3000;
 
 // Middleware
 app.use(express.json());
+
+// Serve static files from the React app
 app.use(express.static(join(__dirname, 'dist')));
 
 // Database Setup
@@ -91,7 +92,11 @@ app.post('/api/contact', (req, res) => {
       to: 'utsavjc@gmail.com', // Target email
       replyTo: email,
       subject: `Portfolio Contact: ${name}`,
-      text: `Name: ${name}\nEmail: ${email}\n\nMessage:\n${message}`,
+      text: `Name: ${name}
+Email: ${email}
+
+Message:
+${message}`,
       html: `
         <div style="font-family: Arial, sans-serif; padding: 20px; color: #333; border: 1px solid #ddd; border-radius: 8px;">
           <h2 style="color: #003e91; margin-top: 0;">New Message from Portfolio</h2>
