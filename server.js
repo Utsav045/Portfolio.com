@@ -4,7 +4,7 @@ import { fileURLToPath } from 'url';
 import { dirname, join } from 'path';
 import nodemailer from 'nodemailer';
 import dotenv from 'dotenv';
-import path from 'path';
+import fs from 'fs';
 
 // Load environment variables
 dotenv.config();
@@ -19,7 +19,12 @@ const PORT = process.env.PORT || 3000;
 app.use(express.json());
 
 // Serve static files from the React app
-app.use(express.static(join(__dirname, 'dist')));
+const distPath = join(__dirname, 'dist');
+if (fs.existsSync(distPath)) {
+  app.use(express.static(distPath));
+} else {
+  console.log('Dist folder not found, skipping static file serving');
+}
 
 // Database Setup
 const dbFile = join(__dirname, 'contacts.db');
@@ -128,7 +133,11 @@ ${message}`,
 
 // Serve React App for all other routes
 app.get('*', (req, res) => {
-  res.sendFile(join(__dirname, 'dist', 'index.html'));
+  if (fs.existsSync(distPath)) {
+    res.sendFile(join(distPath, 'index.html'));
+  } else {
+    res.json({ message: 'API server is running. Frontend build not found.' });
+  }
 });
 
 app.listen(PORT, () => {
