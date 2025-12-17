@@ -24,8 +24,9 @@ A modern, responsive, and dark-themed portfolio website for **Utsav J. Charkhawa
 - **🤖 3D Mascot**: Custom animated robot mascot in the hero section.
 - **🌙 Dark/Light Mode**: Interactive theme toggle with persistent state.
 - **📨 Contact Backend**: Integrated Node.js/Express backend with SQLite database to store contact form messages.
-- **📧 Email Notifications**: Automatic email notifications for new contact form submissions.
+- **📧 Email Notifications**: Automatic email notifications for new contact form submissions with easy configuration testing.
 - **⚡ High Performance**: Built with Vite for fast HMR and optimized production builds.
+- **🎯 Custom Favicon**: Stylish "UC" favicon with blue "C" that adapts to browser themes.
 
 ---
 
@@ -71,7 +72,13 @@ PORT=3000
 3. Generate a new app password for "Mail"
 4. Use this 16-character password in your `.env` file
 
-### 4️⃣ Run Locally (Development)
+### 4️⃣ Generate Favicons (Optional)
+The project includes a custom "UC" favicon with the "C" in blue. To regenerate favicons:
+```bash
+npm run generate-favicons
+```
+
+### 5️⃣ Run Locally (Development)
 This is a full-stack app. You need to run both the Backend (API) and Frontend (React) servers.
 
 **Option A: Separate Terminals (Recommended)**
@@ -98,12 +105,24 @@ npm start
 
 ---
 
-## 🖼️ Logo Configuration
+## 🖼️ Logo & Favicon Configuration
 
+### Custom Logo
 To use your custom logo image:
 1.  Name your image file `logo.png`.
-2.  Place it in the `public/` folder (or the root folder if using Vite publicDir defaults).
+2.  Place it in the `public/` folder.
 3.  The app will automatically detect it. If missing, it falls back to the stylized text logo.
+
+### Custom Favicon
+The project includes a custom "UC" favicon with:
+- Bold, italic "UC" text
+- "U" in black, "C" in brand blue (#003e91)
+- Transparent background that adapts to browser themes
+- Multiple sizes for different devices and contexts
+
+To customize the favicon:
+1. Modify `public/favicon.svg`
+2. Regenerate PNG versions with `npm run generate-favicons`
 
 ---
 
@@ -128,6 +147,7 @@ This project is configured for easy deployment on [Render](https://render.com/),
 ```
 utsav-portfolio/
 ├── dist/                # Production build artifacts
+├── public/              # Static assets (favicons, custom logo)
 ├── components/          # React Components (Hero, Navbar, ResumeModal, etc.)
 ├── constants/           # Data (Projects, Experience, Skills)
 ├── App.tsx              # Main Application Component
