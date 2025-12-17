@@ -10,7 +10,7 @@ const Contact: React.FC = () => {
   });
   const [status, setStatus] = useState<'idle' | 'submitting' | 'success' | 'error'>('idle');
   const [showConfigTest, setShowConfigTest] = useState(false);
-  const [configStatus, setConfigStatus] = useState<{success?: boolean, error?: string, message?: string} | null>(null);
+  const [configStatus, setConfigStatus] = useState<{success?: boolean, error?: string, message?: string, details?: string} | null>(null);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
@@ -50,6 +50,8 @@ const Contact: React.FC = () => {
         body: JSON.stringify(formData),
       });
 
+      const data = await response.json();
+      
       if (response.ok) {
         setStatus('success');
         setFormData({ name: '', email: '', message: '' });
@@ -57,6 +59,10 @@ const Contact: React.FC = () => {
         setTimeout(() => setStatus('idle'), 5000);
       } else {
         setStatus('error');
+        // Show detailed error message if available
+        if (data.details) {
+          console.error('Contact form error details:', data.details);
+        }
       }
     } catch (error) {
       console.error('Error submitting form:', error);
@@ -81,7 +87,7 @@ const Contact: React.FC = () => {
       setTimeout(() => setConfigStatus(null), 5000);
     } catch (error) {
       console.error('Error testing email config:', error);
-      setConfigStatus({ error: 'Failed to test email configuration' });
+      setConfigStatus({ error: 'Failed to test email configuration', details: (error as Error).message });
       setTimeout(() => setConfigStatus(null), 5000);
     }
   };
@@ -159,14 +165,23 @@ const Contact: React.FC = () => {
                                 : 'bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-300'
                             }`}>
                               <i className={`mr-2 fas ${configStatus.success ? 'fa-check-circle' : 'fa-exclamation-circle'}`}></i>
-                              {configStatus.message || configStatus.error}
+                              <span>{configStatus.message || configStatus.error}</span>
+                              {configStatus.details && (
+                                <p className="mt-1 text-xs opacity-75">{configStatus.details}</p>
+                              )}
                             </div>
                           )}
                           
-                          <p className="mt-3 text-xs text-slate-600 dark:text-slate-400">
-                            This feature helps verify if your email settings are properly configured.
-                            Make sure to set your EMAIL_USER and EMAIL_PASS in the .env file.
-                          </p>
+                          <div className="mt-3 text-xs text-slate-600 dark:text-slate-400">
+                            <p className="mb-2"><strong>Setup Instructions:</strong></p>
+                            <ol className="list-decimal list-inside space-y-1">
+                              <li>Enable 2-Factor Authentication on your Google account</li>
+                              <li>Visit <a href="https://myaccount.google.com/apppasswords" target="_blank" rel="noopener noreferrer" className="text-brand-primary dark:text-brand-accent hover:underline">Google App Passwords</a></li>
+                              <li>Generate a new app password for "Mail"</li>
+                              <li>Replace "your_app_password_here" in your .env file with this password</li>
+                              <li>Restart the server and test again</li>
+                            </ol>
+                          </div>
                         </div>
                       )}
                     </div>
@@ -235,7 +250,7 @@ const Contact: React.FC = () => {
 
                     {status === 'error' && (
                       <div className="p-4 bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-300 rounded-xl text-center font-medium">
-                        <i className="fa-solid fa-circle-exclamation mr-2"></i> Failed to send email. Try the WhatsApp button below!
+                        <i className="fa-solid fa-circle-exclamation mr-2"></i> Failed to send message. Please try again or use WhatsApp!
                       </div>
                     )}
 

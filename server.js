@@ -22,8 +22,20 @@ app.use(express.json());
 const distPath = join(__dirname, 'dist');
 if (fs.existsSync(distPath)) {
   app.use(express.static(distPath));
+  
+  // Also serve static files from public directory
+  const publicPath = join(__dirname, 'public');
+  if (fs.existsSync(publicPath)) {
+    app.use(express.static(publicPath));
+  }
 } else {
   console.log('Dist folder not found, skipping static file serving');
+  
+  // Serve static files from public directory
+  const publicPath = join(__dirname, 'public');
+  if (fs.existsSync(publicPath)) {
+    app.use(express.static(publicPath));
+  }
 }
 
 // Database Setup
@@ -44,25 +56,33 @@ const db = new sqlite3.Database(dbFile, (err) => {
 });
 
 // Configure Email Transporter
-// Using Port 587 with secure: false (TLS) is often more reliable for Gmail
-const transporter = nodemailer.createTransport({
-  host: 'smtp.gmail.com',
-  port: 587,
-  secure: false, // upgrade later with STARTTLS
-  auth: {
-    user: process.env.EMAIL_USER,
-    pass: process.env.EMAIL_PASS // Must be an App Password if 2FA is on
-  }
-});
+let transporter;
+let emailConfigured = false;
 
-// Verify connection configuration
-transporter.verify(function (error, success) {
-  if (error) {
-    console.log("Email Server Connection Error:", error);
-  } else {
-    console.log("Server is ready to take our messages");
-  }
-});
+// Check if email credentials are properly configured
+if (process.env.EMAIL_USER && process.env.EMAIL_PASS && process.env.EMAIL_PASS !== 'your_app_password_here') {
+  transporter = nodemailer.createTransport({
+    host: 'smtp.gmail.com',
+    port: 587,
+    secure: false, // upgrade later with STARTTLS
+    auth: {
+      user: process.env.EMAIL_USER,
+      pass: process.env.EMAIL_PASS
+    }
+  });
+  
+  // Verify connection configuration
+  transporter.verify(function (error, success) {
+    if (error) {
+      console.log("Email Server Connection Error:", error);
+    } else {
+      console.log("Server is ready to take our messages");
+      emailConfigured = true;
+    }
+  });
+} else {
+  console.log("Email not configured: Missing EMAIL_USER or EMAIL_PASS in .env file, or using placeholder password");
+}
 
 // API Routes
 app.post('/api/contact', (req, res) => {
@@ -84,17 +104,21 @@ app.post('/api/contact', (req, res) => {
     }
 
     const messageId = this.lastID;
-    console.log(`Message saved to DB with ID: ${messageId}. Attempting to send email...`);
-
-    // Check if credentials exist
-    if (!process.env.EMAIL_USER || !process.env.EMAIL_PASS) {
-      console.error('Missing EMAIL_USER or EMAIL_PASS in .env file');
-      return res.status(500).json({ error: 'Server email configuration missing.' });
+    console.log(`Message saved to DB with ID: ${messageId}.`);
+    
+    // Check if email is configured
+    if (!emailConfigured || !transporter) {
+      console.log('Email not configured, skipping email notification');
+      return res.json({ 
+        success: true, 
+        id: messageId, 
+        warning: 'Message saved but email notification not sent (email not configured)' 
+      });
     }
 
     const mailOptions = {
       from: process.env.EMAIL_USER,
-      to: 'utsavjc@gmail.com', // Target email
+      to: process.env.EMAIL_USER, // Send to the same email as configured
       replyTo: email,
       subject: `Portfolio Contact: ${name}`,
       text: `Name: ${name}
@@ -146,10 +170,36 @@ app.post('/api/test-email-config', (req, res) => {
     });
   }
   
-  return res.json({ 
-    success: true, 
-    message: 'Email configuration found',
-    user: process.env.EMAIL_USER ? `${process.env.EMAIL_USER.substring(0, 3)}***@gmail.com` : 'Not configured'
+  // Check if using placeholder password
+  if (process.env.EMAIL_PASS === 'your_app_password_here') {
+    return res.status(500).json({ 
+      error: 'Email configuration incomplete',
+      details: 'Using placeholder password. Please replace "your_app_password_here" with your actual Gmail App Password.'
+    });
+  }
+  
+  // Check if email is configured and working
+  if (emailConfigured) {
+    return res.json({ 
+      success: true, 
+      message: 'Email configuration is working',
+      user: process.env.EMAIL_USER ? `${process.env.EMAIL_USER.substring(0, 3)}***@gmail.com` : 'Not configured'
+    });
+  } else {
+    return res.status(500).json({ 
+      error: 'Email configuration failed verification',
+      details: 'Email transport is not verified. Check server logs for details.'
+    });
+  }
+});
+
+// Health check endpoint
+app.get('/api/health', (req, res) => {
+  res.json({ 
+    status: 'OK', 
+    timestamp: new Date().toISOString(),
+    emailConfigured: emailConfigured,
+    emailUser: process.env.EMAIL_USER ? `${process.env.EMAIL_USER.substring(0, 3)}***@gmail.com` : 'Not configured'
   });
 });
 
@@ -165,9 +215,12 @@ app.get('*', (req, res) => {
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
   // Log email configuration status on startup (without revealing password)
-  if (process.env.EMAIL_USER && process.env.EMAIL_PASS) {
+  if (process.env.EMAIL_USER && process.env.EMAIL_PASS && process.env.EMAIL_PASS !== 'your_app_password_here') {
     console.log(`Email configured for: ${process.env.EMAIL_USER}`);
   } else {
     console.log('Warning: Email configuration incomplete. Check .env file.');
+    if (process.env.EMAIL_PASS === 'your_app_password_here') {
+      console.log('Hint: Replace "your_app_password_here" in .env with your actual Gmail App Password');
+    }
   }
 });

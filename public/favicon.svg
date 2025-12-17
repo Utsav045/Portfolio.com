@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
+  <rect width="100" height="100" fill="transparent"/>
+  <text x="50" y="65" font-family="Arial, sans-serif" font-size="60" font-weight="bold" font-style="italic" text-anchor="middle" fill="#000">
+    <tspan x="45" dy="-10">U</tspan>
+    <tspan x="55" dy="0" fill="#003e91">C</tspan>
+  </text>
+</svg>

@@ -8,7 +8,8 @@
     "dev": "vite",
     "build": "vite build",
     "start": "node server.js",
-    "postinstall": "npm run build"
+    "postinstall": "npm run build",
+    "generate-favicons": "node generate-favicons.cjs"
   },
   "dependencies": {
     "cors": "^2.8.5",
@@ -18,7 +19,8 @@
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "recharts": "^2.7.2",
-    "sqlite3": "^5.1.6"
+    "sqlite3": "^5.1.6",
+    "svg2png": "^4.1.1"
   },
   "devDependencies": {
     "@types/react": "^18.2.15",
