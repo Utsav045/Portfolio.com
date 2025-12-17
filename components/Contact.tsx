@@ -261,11 +261,15 @@ const Contact: React.FC = () => {
                           disabled={status === 'submitting'}
                           className="w-full bg-gradient-to-r from-brand-primary to-blue-600 hover:to-brand-secondary dark:hover:to-brand-accent text-white font-bold py-4 rounded-xl transition-all shadow-lg shadow-blue-900/40 flex items-center justify-center gap-2 hover:scale-[1.02] disabled:opacity-70 disabled:cursor-not-allowed"
                         >
-                            {status === 'submitting' ? (
-                              <>Sending <i className="fa-solid fa-circle-notch fa-spin"></i>
-                            ) : (
-                              <>Send Message <i className="fa-solid fa-paper-plane"></i>
-                            )}
+                          {status === 'submitting' ? (
+                            <>
+                              Sending <i className="fa-solid fa-circle-notch fa-spin ml-2"></i>
+                            </>
+                          ) : (
+                            <>
+                              Send Message <i className="fa-solid fa-paper-plane ml-2"></i>
+                            </>
+                          )}
                         </button>
                         
                         {/* WhatsApp Button */}
@@ -280,7 +284,7 @@ const Contact: React.FC = () => {
                           onClick={handleWhatsApp}
                           className="w-full bg-[#25D366] hover:bg-[#128C7E] text-white font-bold py-4 rounded-xl transition-all shadow-lg shadow-green-900/20 flex items-center justify-center gap-2 hover:scale-[1.02]"
                         >
-                           Send via WhatsApp <i className="fa-brands fa-whatsapp text-xl"></i>
+                          Send via WhatsApp <i className="fa-brands fa-whatsapp text-xl ml-2"></i>
                         </button>
                     </div>
                 </form>
