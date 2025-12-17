@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { PERSONAL_INFO } from '../constants';
 import Logo from './Logo';
@@ -10,6 +9,8 @@ const Contact: React.FC = () => {
     message: ''
   });
   const [status, setStatus] = useState<'idle' | 'submitting' | 'success' | 'error'>('idle');
+  const [showConfigTest, setShowConfigTest] = useState(false);
+  const [configStatus, setConfigStatus] = useState<{success?: boolean, error?: string, message?: string} | null>(null);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
@@ -63,6 +64,28 @@ const Contact: React.FC = () => {
     }
   };
 
+  // Test email configuration
+  const testEmailConfig = async () => {
+    try {
+      const response = await fetch('/api/test-email-config', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        }
+      });
+      
+      const data = await response.json();
+      setConfigStatus(data);
+      
+      // Clear status after 5 seconds
+      setTimeout(() => setConfigStatus(null), 5000);
+    } catch (error) {
+      console.error('Error testing email config:', error);
+      setConfigStatus({ error: 'Failed to test email configuration' });
+      setTimeout(() => setConfigStatus(null), 5000);
+    }
+  };
+
   return (
     <footer id="contact" className="bg-white dark:bg-[#020c26] pt-20 border-t border-gray-200 dark:border-brand-primary/20 scroll-mt-24 transition-colors duration-300">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-12">
@@ -106,6 +129,46 @@ const Contact: React.FC = () => {
                             <p className="text-xs text-slate-500 uppercase tracking-wider font-bold mb-1">Location</p>
                             <p className="font-semibold text-lg">{PERSONAL_INFO.location}</p>
                         </div>
+                    </div>
+                    
+                    {/* Email Configuration Test Button */}
+                    <div className="pt-4">
+                      <button 
+                        onClick={() => setShowConfigTest(!showConfigTest)}
+                        className="text-sm text-brand-primary dark:text-brand-accent hover:underline"
+                      >
+                        {showConfigTest ? 'Hide' : 'Show'} Email Configuration Test
+                      </button>
+                      
+                      {showConfigTest && (
+                        <div className="mt-4 p-4 bg-gray-50 dark:bg-brand-card-dark rounded-lg border border-gray-200 dark:border-slate-800">
+                          <div className="flex justify-between items-center">
+                            <h3 className="font-bold text-slate-800 dark:text-white">Email Configuration</h3>
+                            <button 
+                              onClick={testEmailConfig}
+                              className="px-3 py-1 bg-brand-primary dark:bg-brand-accent text-white text-sm rounded-md hover:opacity-90"
+                            >
+                              Test Config
+                            </button>
+                          </div>
+                          
+                          {configStatus && (
+                            <div className={`mt-3 p-3 rounded-md text-sm ${
+                              configStatus.success 
+                                ? 'bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-300' 
+                                : 'bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-300'
+                            }`}>
+                              <i className={`mr-2 fas ${configStatus.success ? 'fa-check-circle' : 'fa-exclamation-circle'}`}></i>
+                              {configStatus.message || configStatus.error}
+                            </div>
+                          )}
+                          
+                          <p className="mt-3 text-xs text-slate-600 dark:text-slate-400">
+                            This feature helps verify if your email settings are properly configured.
+                            Make sure to set your EMAIL_USER and EMAIL_PASS in the .env file.
+                          </p>
+                        </div>
+                      )}
                     </div>
                 </div>
             </div>
@@ -184,9 +247,9 @@ const Contact: React.FC = () => {
                           className="w-full bg-gradient-to-r from-brand-primary to-blue-600 hover:to-brand-secondary dark:hover:to-brand-accent text-white font-bold py-4 rounded-xl transition-all shadow-lg shadow-blue-900/40 flex items-center justify-center gap-2 hover:scale-[1.02] disabled:opacity-70 disabled:cursor-not-allowed"
                         >
                             {status === 'submitting' ? (
-                              <>Sending <i className="fa-solid fa-circle-notch fa-spin"></i></>
+                              <>Sending <i className="fa-solid fa-circle-notch fa-spin"></i>
                             ) : (
-                              <>Send Message <i className="fa-solid fa-paper-plane"></i></>
+                              <>Send Message <i className="fa-solid fa-paper-plane"></i>
                             )}
                         </button>
                         

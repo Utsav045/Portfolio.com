@@ -1,4 +1,3 @@
-
 # 🚀 Utsav J. Charkhawala - Portfolio
 
 ![Portfolio Badge](https://img.shields.io/badge/Portfolio-Live-blue?style=for-the-badge)
@@ -25,6 +24,7 @@ A modern, responsive, and dark-themed portfolio website for **Utsav J. Charkhawa
 - **🤖 3D Mascot**: Custom animated robot mascot in the hero section.
 - **🌙 Dark/Light Mode**: Interactive theme toggle with persistent state.
 - **📨 Contact Backend**: Integrated Node.js/Express backend with SQLite database to store contact form messages.
+- **📧 Email Notifications**: Automatic email notifications for new contact form submissions.
 - **⚡ High Performance**: Built with Vite for fast HMR and optimized production builds.
 
 ---
@@ -57,7 +57,21 @@ cd portfolio
 npm install
 ```
 
-### 3️⃣ Run Locally (Development)
+### 3️⃣ Configure Email Settings
+Create a `.env` file in the root directory with your email configuration:
+```env
+EMAIL_USER=your_email@gmail.com
+EMAIL_PASS=your_app_password_here
+PORT=3000
+```
+
+**Important**: For Gmail, you need to use an App Password instead of your regular password:
+1. Enable 2-Factor Authentication on your Google account
+2. Visit [Google App Passwords](https://myaccount.google.com/apppasswords)
+3. Generate a new app password for "Mail"
+4. Use this 16-character password in your `.env` file
+
+### 4️⃣ Run Locally (Development)
 This is a full-stack app. You need to run both the Backend (API) and Frontend (React) servers.
 
 **Option A: Separate Terminals (Recommended)**
@@ -103,6 +117,9 @@ This project is configured for easy deployment on [Render](https://render.com/),
 3.  **Build Command**: `npm install && npm run build`
 4.  **Start Command**: `npm start`
 5.  **Environment**: Node.js
+6.  **Add Environment Variables**:
+    - `EMAIL_USER`: your_email@gmail.com
+    - `EMAIL_PASS`: your_app_password
 
 ---
 

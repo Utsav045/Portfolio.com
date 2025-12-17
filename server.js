@@ -131,6 +131,28 @@ ${message}`,
   stmt.finalize();
 });
 
+// New endpoint for testing email configuration
+app.post('/api/test-email-config', (req, res) => {
+  // Only allow this in development environment for security
+  if (process.env.NODE_ENV === 'production') {
+    return res.status(403).json({ error: 'Endpoint not available in production' });
+  }
+  
+  // Check if credentials exist
+  if (!process.env.EMAIL_USER || !process.env.EMAIL_PASS) {
+    return res.status(500).json({ 
+      error: 'Email configuration missing',
+      details: 'EMAIL_USER or EMAIL_PASS not found in environment variables'
+    });
+  }
+  
+  return res.json({ 
+    success: true, 
+    message: 'Email configuration found',
+    user: process.env.EMAIL_USER ? `${process.env.EMAIL_USER.substring(0, 3)}***@gmail.com` : 'Not configured'
+  });
+});
+
 // Serve React App for all other routes
 app.get('*', (req, res) => {
   if (fs.existsSync(distPath)) {
@@ -142,4 +164,10 @@ app.get('*', (req, res) => {
 
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
+  // Log email configuration status on startup (without revealing password)
+  if (process.env.EMAIL_USER && process.env.EMAIL_PASS) {
+    console.log(`Email configured for: ${process.env.EMAIL_USER}`);
+  } else {
+    console.log('Warning: Email configuration incomplete. Check .env file.');
+  }
 });
