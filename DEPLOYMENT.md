@@ -57,8 +57,8 @@ const transporter = nodemailer.createTransport({
    - **Start Command**: `npm start`
    - **Environment**: Node.js
 6. Add Environment Variables:
-   - `EMAIL_USER`: your_email@gmail.com
-   - `EMAIL_PASS`: your_app_password
+   - `EMAIL_USER`: utsavjc@gmail.com
+   - `EMAIL_PASS`: wxhm jnfm faee hxts
 7. Click "Create Web Service"
 
 ### Vercel + External Backend
