@@ -6,16 +6,14 @@
   "scripts": {
     "dev": "vite",
     "build": "vite build",
-    "preview": "vite preview",
-    "generate-favicons": "node generate-favicons.cjs"
+    "preview": "vite preview"
   },
   "dependencies": {
+    "@vitejs/plugin-react": "^4.0.3",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "recharts": "^2.7.2",
-    "svg2png": "^4.1.1",
-    "vite": "^4.4.5",
-    "@vitejs/plugin-react": "^4.0.3"
+    "vite": "^7.3.1"
   },
   "devDependencies": {
     "@types/react": "^18.2.15",
