@@ -4,7 +4,26 @@ This is a **frontend-only** portfolio application that can be deployed to any st
 
 ## ☁️ Platform-Specific Deployment
 
-### Vercel Deployment (Recommended)
+### Render Deployment (Recommended)
+
+1. **Fork and Prepare**
+   - Fork this repository to your GitHub account
+   - Clone your forked repository locally
+
+2. **Deploy to Render**
+   - Go to [https://render.com](https://render.com) and sign up for a free account
+   - Click "New +" and select "Web Service"
+   - Connect your GitHub repository
+   - Render will auto-detect the project as a static site
+   - Use the build command: `npm install && npm run build`
+   - Set the publish directory to `./dist`
+
+3. **Configure Settings** (if needed)
+   - **Environment**: Static Site
+   - **Build Command**: `npm install && npm run build`
+   - **Publish Directory**: `./dist`
+
+### Vercel Deployment
 
 1. **Fork and Prepare**
    - Fork this repository to your GitHub account

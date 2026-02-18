@@ -206,7 +206,35 @@ Edit the robot mascot in `components/Hero.tsx`:
 
 ## 🚀 Deployment
 
-### Vercel (Recommended - Frontend Only)
+### Render (Recommended - Frontend Only)
+Deploy your frontend-only portfolio on Render:
+
+1. **Prepare Your Repository**
+   - Fork this repository to your GitHub account
+   - Clone your forked repository locally
+   - Make any customizations you want to your portfolio
+
+2. **Sign Up on Render**
+   - Go to [https://render.com](https://render.com) and sign up for a free account
+   - Connect your GitHub account to Render
+
+3. **Create Web Service**
+   - Click "New +" and select "Web Service"
+   - Choose your forked repository
+   - Render will auto-detect the project as a static site
+
+4. **Configure Build Settings**
+   - **Environment**: Static
+   - **Branch**: main (or your default branch)
+   - **Build Command**: `npm install && npm run build`
+   - **Static Publish Path**: `./dist`
+
+5. **Complete Deployment**
+   - Click "Create Web Service"
+   - Wait for the build to complete (this may take 2-5 minutes)
+   - Your site will be available at the URL provided by Render
+
+### Vercel (Alternative - Frontend Only)
 Deploy your frontend-only portfolio on Vercel:
 
 1. **Prepare Your Repository**
