@@ -1,0 +1,8 @@
+User-agent: *
+Allow: /
+
+# Sitemap location
+Sitemap: https://utsavjcharkhawala.dev/sitemap.xml
+
+# Crawl-delay: 10
+# Host: https://utsavjcharkhawala.dev
