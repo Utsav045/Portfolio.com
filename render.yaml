@@ -1,7 +1,7 @@
 services:
-- type: web
+- type: static
   name: utsav-portfolio
-  env: static
+  rootDir: .
   buildCommand: npm install && npm run build
   staticPublishPath: ./dist
   envVars:
