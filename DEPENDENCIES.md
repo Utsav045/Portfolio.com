@@ -1,7 +1,7 @@
 
 # Project Dependencies
 
-This project is a full-stack application using **React (Frontend)** and **Node.js/Express (Backend)**. Below is the list of all libraries required to run the application.
+This project is a frontend-only application using **React** and **TypeScript**. Below is the list of all libraries required to run the application.
 
 ## 📦 Production Dependencies
 These libraries are required for the application to run in production.
@@ -11,11 +11,7 @@ These libraries are required for the application to run in production.
 | **react** | The core React library. |
 | **react-dom** | React DOM rendering for the browser. |
 | **recharts** | Composable charting library used for the Skills radar chart. |
-| **express** | Fast, unopinionated, minimalist web framework for Node.js. |
-| **sqlite3** | Asynchronous, non-blocking SQLite3 bindings for Node.js (Database). |
-| **nodemailer** | Module to send emails (used for Contact form). |
-| **dotenv** | Loads environment variables from `.env` file. |
-| **cors** | Middleware to enable Cross-Origin Resource Sharing (optional if serving from same origin). |
+| **svg2png** | SVG to PNG conversion utility. |
 
 ## 🛠️ Development Dependencies
 These libraries are used for building, testing, and developing the application.
@@ -35,5 +31,5 @@ These libraries are used for building, testing, and developing the application.
 Copy and run the following command in your terminal to install everything at once:
 
 ```bash
-npm install react react-dom recharts express sqlite3 nodemailer dotenv cors && npm install -D vite @vitejs/plugin-react typescript @types/react @types/react-dom
+npm install react react-dom recharts svg2png && npm install -D vite @vitejs/plugin-react typescript @types/react @types/react-dom
 ```

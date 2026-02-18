@@ -8,9 +8,7 @@ const Contact: React.FC = () => {
     email: '',
     message: ''
   });
-  const [status, setStatus] = useState<'idle' | 'submitting' | 'success' | 'error'>('idle');
-  const [showConfigTest, setShowConfigTest] = useState(false);
-  const [configStatus, setConfigStatus] = useState<{success?: boolean, error?: string, message?: string, details?: string} | null>(null);
+  const [status, setStatus] = useState<'idle' | 'success' | 'error'>('idle');
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
@@ -35,61 +33,22 @@ const Contact: React.FC = () => {
     
     // Open WhatsApp Web/App
     window.open(`https://wa.me/${phoneNumber}?text=${text}`, '_blank');
-  };
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setStatus('submitting');
     
-    try {
-      const response = await fetch('/api/contact', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(formData),
-      });
-
-      const data = await response.json();
-      
-      if (response.ok) {
-        setStatus('success');
-        setFormData({ name: '', email: '', message: '' });
-        // Clear success message after 5 seconds
-        setTimeout(() => setStatus('idle'), 5000);
-      } else {
-        setStatus('error');
-        // Show detailed error message if available
-        if (data.details) {
-          console.error('Contact form error details:', data.details);
-        }
-      }
-    } catch (error) {
-      console.error('Error submitting form:', error);
-      setStatus('error');
-    }
+    // Show success message
+    setStatus('success');
+    setFormData({ name: '', email: '', message: '' });
+    setTimeout(() => setStatus('idle'), 5000);
   };
 
-  // Test email configuration
-  const testEmailConfig = async () => {
-    try {
-      const response = await fetch('/api/test-email-config', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        }
-      });
-      
-      const data = await response.json();
-      setConfigStatus(data);
-      
-      // Clear status after 5 seconds
-      setTimeout(() => setConfigStatus(null), 5000);
-    } catch (error) {
-      console.error('Error testing email config:', error);
-      setConfigStatus({ error: 'Failed to test email configuration', details: (error as Error).message });
-      setTimeout(() => setConfigStatus(null), 5000);
-    }
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    
+    // For frontend-only version, we'll just show a message
+    // In a real implementation, you might want to use a service like Formspree, Netlify Forms, or EmailJS
+    alert(`Thank you for your message, ${formData.name}! Since this is a frontend-only version, please use the WhatsApp option or email me directly at ${PERSONAL_INFO.email}`);
+    setStatus('success');
+    setFormData({ name: '', email: '', message: '' });
+    setTimeout(() => setStatus('idle'), 5000);
   };
 
   return (
@@ -136,55 +95,6 @@ const Contact: React.FC = () => {
                             <p className="font-semibold text-lg">{PERSONAL_INFO.location}</p>
                         </div>
                     </div>
-                    
-                    {/* Email Configuration Test Button */}
-                    <div className="pt-4">
-                      <button 
-                        onClick={() => setShowConfigTest(!showConfigTest)}
-                        className="text-sm text-brand-primary dark:text-brand-accent hover:underline"
-                      >
-                        {showConfigTest ? 'Hide' : 'Show'} Email Configuration Test
-                      </button>
-                      
-                      {showConfigTest && (
-                        <div className="mt-4 p-4 bg-gray-50 dark:bg-brand-card-dark rounded-lg border border-gray-200 dark:border-slate-800">
-                          <div className="flex justify-between items-center">
-                            <h3 className="font-bold text-slate-800 dark:text-white">Email Configuration</h3>
-                            <button 
-                              onClick={testEmailConfig}
-                              className="px-3 py-1 bg-brand-primary dark:bg-brand-accent text-white text-sm rounded-md hover:opacity-90"
-                            >
-                              Test Config
-                            </button>
-                          </div>
-                          
-                          {configStatus && (
-                            <div className={`mt-3 p-3 rounded-md text-sm ${
-                              configStatus.success 
-                                ? 'bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-300' 
-                                : 'bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-300'
-                            }`}>
-                              <i className={`mr-2 fas ${configStatus.success ? 'fa-check-circle' : 'fa-exclamation-circle'}`}></i>
-                              <span>{configStatus.message || configStatus.error}</span>
-                              {configStatus.details && (
-                                <p className="mt-1 text-xs opacity-75">{configStatus.details}</p>
-                              )}
-                            </div>
-                          )}
-                          
-                          <div className="mt-3 text-xs text-slate-600 dark:text-slate-400">
-                            <p className="mb-2"><strong>Setup Instructions:</strong></p>
-                            <ol className="list-decimal list-inside space-y-1">
-                              <li>Enable 2-Factor Authentication on your Google account</li>
-                              <li>Visit <a href="https://myaccount.google.com/apppasswords" target="_blank" rel="noopener noreferrer" className="text-brand-primary dark:text-brand-accent hover:underline">Google App Passwords</a></li>
-                              <li>Generate a new app password for "Mail"</li>
-                              <li>Replace "your_app_password_here" in your .env file with this password</li>
-                              <li>Restart the server and test again</li>
-                            </ol>
-                          </div>
-                        </div>
-                      )}
-                    </div>
                 </div>
             </div>
 
@@ -203,8 +113,7 @@ const Contact: React.FC = () => {
                                   value={formData.name}
                                   onChange={handleChange}
                                   required
-                                  disabled={status === 'submitting'}
-                                  className="w-full bg-gray-50 dark:bg-brand-dark border border-gray-300 dark:border-slate-700 rounded-xl pl-10 pr-4 py-3.5 text-slate-900 dark:text-white focus:outline-none focus:border-brand-primary dark:focus:border-brand-accent transition-colors shadow-inner disabled:opacity-50" 
+                                  className="w-full bg-gray-50 dark:bg-brand-dark border border-gray-300 dark:border-slate-700 rounded-xl pl-10 pr-4 py-3.5 text-slate-900 dark:text-white focus:outline-none focus:border-brand-primary dark:focus:border-brand-accent transition-colors shadow-inner" 
                                   placeholder="Enter your name" 
                                 />
                             </div>
@@ -220,8 +129,7 @@ const Contact: React.FC = () => {
                                   value={formData.email}
                                   onChange={handleChange}
                                   required
-                                  disabled={status === 'submitting'}
-                                  className="w-full bg-gray-50 dark:bg-brand-dark border border-gray-300 dark:border-slate-700 rounded-xl pl-10 pr-4 py-3.5 text-slate-900 dark:text-white focus:outline-none focus:border-brand-primary dark:focus:border-brand-accent transition-colors shadow-inner disabled:opacity-50" 
+                                  className="w-full bg-gray-50 dark:bg-brand-dark border border-gray-300 dark:border-slate-700 rounded-xl pl-10 pr-4 py-3.5 text-slate-900 dark:text-white focus:outline-none focus:border-brand-primary dark:focus:border-brand-accent transition-colors shadow-inner" 
                                   placeholder="Enter your email" 
                                 />
                             </div>
@@ -236,8 +144,7 @@ const Contact: React.FC = () => {
                           value={formData.message}
                           onChange={handleChange}
                           required
-                          disabled={status === 'submitting'}
-                          className="w-full bg-gray-50 dark:bg-brand-dark border border-gray-300 dark:border-slate-700 rounded-xl px-4 py-3.5 text-slate-900 dark:text-white focus:outline-none focus:border-brand-primary dark:focus:border-brand-accent transition-colors resize-none shadow-inner disabled:opacity-50" 
+                          className="w-full bg-gray-50 dark:bg-brand-dark border border-gray-300 dark:border-slate-700 rounded-xl px-4 py-3.5 text-slate-900 dark:text-white focus:outline-none focus:border-brand-primary dark:focus:border-brand-accent transition-colors resize-none shadow-inner" 
                           placeholder="Enter your message"
                         ></textarea>
                     </div>
@@ -258,18 +165,9 @@ const Contact: React.FC = () => {
                         {/* Primary Submit Button */}
                         <button 
                           type="submit" 
-                          disabled={status === 'submitting'}
-                          className="w-full bg-gradient-to-r from-brand-primary to-blue-600 hover:to-brand-secondary dark:hover:to-brand-accent text-white font-bold py-4 rounded-xl transition-all shadow-lg shadow-blue-900/40 flex items-center justify-center gap-2 hover:scale-[1.02] disabled:opacity-70 disabled:cursor-not-allowed"
+                          className="w-full bg-gradient-to-r from-brand-primary to-blue-600 hover:to-brand-secondary dark:hover:to-brand-accent text-white font-bold py-4 rounded-xl transition-all shadow-lg shadow-blue-900/40 flex items-center justify-center gap-2 hover:scale-[1.02]"
                         >
-                          {status === 'submitting' ? (
-                            <>
-                              Sending <i className="fa-solid fa-circle-notch fa-spin ml-2"></i>
-                            </>
-                          ) : (
-                            <>
-                              Send Message <i className="fa-solid fa-paper-plane ml-2"></i>
-                            </>
-                          )}
+                          Send Message <i className="fa-solid fa-paper-plane ml-2"></i>
                         </button>
                         
                         {/* WhatsApp Button */}
